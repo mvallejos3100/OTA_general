@@ -8,4 +8,4 @@ wile True:
   time.sleep(1)
   rele.off()
   time.sleep(1)
-  print('Version 2 installed using USB') 
+  print('Versión actualizada por medio de OTA\n') 
