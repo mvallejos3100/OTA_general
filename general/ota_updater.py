@@ -97,12 +97,9 @@ class OTAUpdater:
         print('Configuración de la red :', sta_if.ifconfig())
 
     def _check_for_new_version(self):
-        print("Buscando versiones")
         current_version = self.get_version(self.modulepath(self.main_dir))
-        print(current_version)
         latest_version = self.get_latest_version()
-        print(latest_version)
-        print('Revisando versión... ')
+        print('Revisando si hay versiones disponibles... ')
         print('\tVersión actual: ', current_version)
         print('\tÚltima versión: ', latest_version)
         return (current_version, latest_version)
