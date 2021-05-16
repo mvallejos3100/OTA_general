@@ -10,7 +10,7 @@ ap_ssid = "Conectar_esp32_"+str(id)
 ap_password = "1234567890"
 ap_authmode = 3  # WPA2
 
-NETWORK_PROFILES = 'general/wifi.dat'
+NETWORK_PROFILES = './general/wifi.dat'
 
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
@@ -65,6 +65,7 @@ def get_connection():
 
 
 def read_profiles():
+    profiles = {}
     try:
         with open(NETWORK_PROFILES) as f:
             lines = f.readlines()
@@ -75,6 +76,7 @@ def read_profiles():
         return profiles
     except:
         print("El archivo de redes conocidas no fue encontrado")
+        return profiles
 
 
 def write_profiles(profiles):
@@ -87,6 +89,8 @@ def write_profiles(profiles):
 
 
 def do_connect(ssid, password):
+    print(type(ssid))
+    print(type(password))
     wlan_sta.active(True)
     if wlan_sta.isconnected():
         return None
