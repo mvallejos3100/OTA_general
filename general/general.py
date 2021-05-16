@@ -94,30 +94,28 @@ try:
 except OSError as e:
     restart_and_reconnect()
 
-def mqtt_client:
-    for i in range(1000000):
+def mqtt_client():
+    while True:
 
-        while True:
+        try:
+            client.check_msg()
+            if (time.time() - last_message) > message_interval:
 
-            try:
-                client.check_msg()
-                if (time.time() - last_message) > message_interval:
+                msg = b'Hola%d' % counter
+                estado_4 = b'%d' % pin4.value()
+                estado_13 = b'%d' % pin13.value()
+                estado_16 = b'%d' % pin16.value()
+                version = b'%s' % version
 
-                    msg = b'Hola%d' % counter
-                    estado_4 = b'%d' % pin4.value()
-                    estado_13 = b'%d' % pin13.value()
-                    estado_16 = b'%d' % pin16.value()
-                    version = b'%s' % version
+                m = [msg, estado_4, estado_13, estado_16, version]
 
-                    m = [msg, estado_4, estado_13, estado_16, version]
+                for i in range (len(a)):
 
-                    for i in range (len(a)):
+                    client.publish(a[i], m[i])
+                last_message = time.time()
+                counter += 1
 
-                        client.publish(a[i], m[i])
-                    last_message = time.time()
-                    counter += 1
-
-            except OSError as e:
-                restart_and_reconnect()
-            if disparador == 1:
-                return 1
+        except OSError as e:
+            restart_and_reconnect()
+        if disparador == 1:
+            return 1
