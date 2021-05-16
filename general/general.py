@@ -26,6 +26,9 @@ topic_sub13 = topic_sub13.encode()
 
 topic_sub16= nombre + '/IO16/mando'
 topic_sub16 = topic_sub16.encode()
+
+topic_sub_version = nombre+"/versión/"
+topic_sub_version = topic_sub_version.encode()
 ######################################################
 topic_pub = nombre + '/confirmacion'
 topic_pub = topic_pub.encode()
@@ -39,16 +42,20 @@ topic_pub13 = topic_pub13.encode()
 topic_pub16 = nombre+"/IO16/estado"
 topic_pub16 = topic_pub16.encode()
 
-a = [topic_pub, topic_pub4, topic_pub13, topic_pub16]
+topic_pub_version = nombre+"/versión/"
+topic_pub_version = topic_pub_version.encode()
 
-b = [topic_sub, topic_sub4, topic_sub13, topic_sub16]
+a = [topic_pub, topic_pub4, topic_pub13, topic_pub16, topic_pub_version]
+
+b = [topic_sub, topic_sub4, topic_sub13, topic_sub16, topic_sub_version]
 
 last_message = 0
 message_interval = .5
 
 counter = 0
 def sub_cb(topic, msg):
-
+    disparador = 0
+    global disparador
     if topic == topic_sub4 and msg == b"1":
       pin4.on()
     elif topic == topic_sub4 and msg == b"0":
@@ -61,16 +68,11 @@ def sub_cb(topic, msg):
 
     if topic == topic_sub16 and msg == b"1":
       pin16.on()
-      time.sleep(1)
-      pin16.off()
-      time.sleep(1)
-      pin16.on()
-      time.sleep(1)
-      pin16.off()
-      time.sleep(1)
-      pin16.on()
     elif topic == topic_sub16 and msg == b"0":
       pin16.off()
+
+    elif topic == topic_sub_version and msg == b"1":
+      disparador = 1
 
 def connect_and_subscribe():
     global nombre, mqtt_server, topic_sub
@@ -92,24 +94,30 @@ try:
 except OSError as e:
     restart_and_reconnect()
 
-while True:
+def mqtt_client:
+    for i in range(1000000):
 
-    try:
-        client.check_msg()
-        if (time.time() - last_message) > message_interval:
+        while True:
 
-            msg = b'Hola%d' % counter
-            estado_4 = b'%d' % pin4.value()
-            estado_13 = b'%d' % pin13.value()
-            estado_16 = b'%d' % pin16.value()
+            try:
+                client.check_msg()
+                if (time.time() - last_message) > message_interval:
 
-            m = [msg, estado_4, estado_13, estado_16]
+                    msg = b'Hola%d' % counter
+                    estado_4 = b'%d' % pin4.value()
+                    estado_13 = b'%d' % pin13.value()
+                    estado_16 = b'%d' % pin16.value()
+                    version = b'%s' % version
 
-            for i in range (len(a)):
+                    m = [msg, estado_4, estado_13, estado_16, version]
 
-                client.publish(a[i], m[i])
-            last_message = time.time()
-            counter += 1
+                    for i in range (len(a)):
 
-    except OSError as e:
-        restart_and_reconnect()
+                        client.publish(a[i], m[i])
+                    last_message = time.time()
+                    counter += 1
+
+            except OSError as e:
+                restart_and_reconnect()
+            if disparador == 1:
+                return 1

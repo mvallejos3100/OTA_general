@@ -65,18 +65,14 @@ def get_connection():
 
 
 def read_profiles():
+
+    with open(NETWORK_PROFILES) as f:
+        lines = f.readlines()
     profiles = {}
-    try:
-        with open(NETWORK_PROFILES) as f:
-            lines = f.readlines()
-        profiles = {}
-        for line in lines:
-            ssid, password = line.strip("\n").split(";")
-            profiles[ssid] = password
-        return profiles
-    except:
-        print("El archivo de redes conocidas no fue encontrado")
-        return profiles
+    for line in lines:
+        ssid, password = line.strip("\n").split(";")
+        profiles[ssid] = password
+    return profiles
 
 
 def write_profiles(profiles):
