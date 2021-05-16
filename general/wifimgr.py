@@ -10,7 +10,7 @@ ap_ssid = "Conectar_esp32_"+str(id)
 ap_password = "1234567890"
 ap_authmode = 3  # WPA2
 
-NETWORK_PROFILES = './general/wifi.dat'
+NETWORK_PROFILES = 'wifi.dat'
 
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
