@@ -7,16 +7,13 @@ import time
 
 
 pin4, pin13, pin16 = Pin(4, Pin.OUT), Pin(13, Pin.OUT), Pin(16, Pin.OUT)
-
 pin34, pin35, pin36, pin37, pin38, pin39 = Pin(34, Pin.IN), Pin(35, Pin.IN), Pin(36, Pin.IN), Pin(37, Pin.IN), Pin(38, Pin.IN), Pin(39, Pin.IN)
 
 mqtt_server = '192.168.1.6'
-
 nombre = ubinascii.hexlify(machine.unique_id()).decode('utf-8')
 
 topic_sub = nombre + '/confirmacion'
 topic_sub = topic_sub.encode()
-
 
 topic_sub4 = nombre + '/IO4/mando'
 topic_sub4 = topic_sub4.encode()
@@ -27,7 +24,7 @@ topic_sub13 = topic_sub13.encode()
 topic_sub16= nombre + '/IO16/mando'
 topic_sub16 = topic_sub16.encode()
 
-topic_sub_version = nombre+"/versión/"
+topic_sub_version = nombre+"/version_cambio"
 topic_sub_version = topic_sub_version.encode()
 ######################################################
 topic_pub = nombre + '/confirmacion'
@@ -42,19 +39,15 @@ topic_pub13 = topic_pub13.encode()
 topic_pub16 = nombre+"/IO16/estado"
 topic_pub16 = topic_pub16.encode()
 
-topic_pub_version = nombre+"/versión/"
+topic_pub_version = nombre+"/version_actual"
 topic_pub_version = topic_pub_version.encode()
 
 a = [topic_pub, topic_pub4, topic_pub13, topic_pub16, topic_pub_version]
 
 b = [topic_sub, topic_sub4, topic_sub13, topic_sub16, topic_sub_version]
 
-last_message = 0
-message_interval = .5
-
-counter = 0
 def sub_cb(topic, msg):
-    disparador = 0
+
     global disparador
     if topic == topic_sub4 and msg == b"1":
       pin4.on()
@@ -72,7 +65,8 @@ def sub_cb(topic, msg):
       pin16.off()
 
     elif topic == topic_sub_version and msg == b"1":
-      disparador = 1
+      print("Disparo")
+      Update()
 
 def connect_and_subscribe():
     global nombre, mqtt_server, topic_sub
@@ -95,6 +89,25 @@ except OSError as e:
     restart_and_reconnect()
 
 def mqtt_client():
+    version = 1
+    counter = 0
+    last_message = 0
+    message_interval = .5
+    disparador = 0
+
+from general.ota_updater import OTAUpdater
+
+def Update():
+    time.sleep(1)
+    print('Memoria liberada: ', gc.mem_free())
+
+    otaUpdater = OTAUpdater('https://github.com/mvallejos3100/OTA_general', main_dir='general')#, secrets_file="secrets.py")
+    hasUpdated = otaUpdater.install_update_if_available()
+    if hasUpdated:
+        machine.reset()
+    else:
+        del(otaUpdater)
+        gc.collect()
     while True:
 
         try:
@@ -118,4 +131,5 @@ def mqtt_client():
         except OSError as e:
             restart_and_reconnect()
         if disparador == 1:
-            return 1
+            break
+    return 1

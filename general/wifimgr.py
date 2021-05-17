@@ -6,7 +6,7 @@ import ubinascii
 import machine
 
 id = ubinascii.hexlify(machine.unique_id()).decode('utf-8')
-ap_ssid = "Conectar_esp32_"+str(id)
+ap_ssid = "Conectar_dispositivo_"+str(id)
 ap_password = "1234567890"
 ap_authmode = 3  # WPA2
 
@@ -85,8 +85,6 @@ def write_profiles(profiles):
 
 
 def do_connect(ssid, password):
-    print(type(ssid))
-    print(type(password))
     wlan_sta.active(True)
     if wlan_sta.isconnected():
         return None
@@ -101,9 +99,9 @@ def do_connect(ssid, password):
         time.sleep(0.1)
         print('.', end='')
     if connected:
-        print('\nConnected. Network config: ', wlan_sta.ifconfig())
+        print('\nConectado. Configuración de red: ', wlan_sta.ifconfig())
     else:
-        print('\nFailed. Not Connected to: ' + ssid)
+        print('\nFalló. No se conectó a: ' + ssid)
     return connected
 
 
