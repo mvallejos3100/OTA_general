@@ -10,7 +10,7 @@ ap_ssid = "Conectar_dispositivo_"+str(id)
 ap_password = "1234567890"
 ap_authmode = 3  # WPA2
 
-NETWORK_PROFILES = 'wifi.dat'
+NETWORK_PROFILES = './wifi.dat'
 
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
@@ -283,7 +283,7 @@ def start(port=80):
             except OSError:
                 pass
 
-            print("Request is: {}".format(request))
+            #print("Request is: {}".format(request))
             if "HTTP" not in request:  # skip invalid requests
                 continue
 
@@ -292,7 +292,7 @@ def start(port=80):
                 url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).decode("utf-8").rstrip("/")
             except Exception:
                 url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).rstrip("/")
-            print("URL is {}".format(url))
+            #print("URL is {}".format(url))
 
             if url == "":
                 handle_root(client)
