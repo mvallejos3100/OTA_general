@@ -127,8 +127,6 @@ def mqtt_client():
                     client.publish(a[i], m[i])
                 last_message = time.time()
                 counter += 1
-            print("hey")
 
         except OSError as e:
-            print("reinicio")
             restart_and_reconnect()
