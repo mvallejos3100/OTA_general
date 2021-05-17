@@ -2,7 +2,7 @@ from general.umqttsimple import MQTTClient
 from machine import Pin
 import ubinascii
 
-import machine
+import machine, gc
 import time
 
 
@@ -88,13 +88,6 @@ try:
 except OSError as e:
     restart_and_reconnect()
 
-def mqtt_client():
-    version = 1
-    counter = 0
-    last_message = 0
-    message_interval = .5
-    disparador = 0
-
 from general.ota_updater import OTAUpdater
 
 def Update():
@@ -108,6 +101,13 @@ def Update():
     else:
         del(otaUpdater)
         gc.collect()
+
+def mqtt_client():
+    version = 1
+    counter = 0
+    last_message = 0
+    message_interval = .5
+
     while True:
 
         try:
@@ -127,9 +127,8 @@ def Update():
                     client.publish(a[i], m[i])
                 last_message = time.time()
                 counter += 1
+            print("hey")
 
         except OSError as e:
+            print("reinicio")
             restart_and_reconnect()
-        if disparador == 1:
-            break
-    return 1
