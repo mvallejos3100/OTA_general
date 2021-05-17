@@ -161,9 +161,9 @@ class OTAUpdater:
             print('Archivos secretos copiados de {} a {}'.format(fromPath, toPath))
 
     def _delete_old_version(self):
-        print('Borrando la versión antigua en{} ...'.format(self.modulepath(self.main_dir)))
+        print('Borrando la versión antigua {} ...'.format(self.modulepath(self.main_dir)))
         self._rmtree(self.modulepath(self.main_dir))
-        print('Borrando la versión antigua en {} ...'.format(self.modulepath(self.main_dir)))
+        print('Borrando la versión antigua {} ...'.format(self.modulepath(self.main_dir)))
 
     def _install_new_version(self):
         print('Instalando la nueva versión en {} ...'.format(self.modulepath(self.main_dir)))
