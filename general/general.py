@@ -61,6 +61,8 @@ def sub_cb(topic, msg):
 
     if topic == topic_sub16 and msg == b"1":
       pin16.on()
+      time.sleep(.5)
+      led.off()  
     elif topic == topic_sub16 and msg == b"0":
       pin16.off()
 
